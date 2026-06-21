@@ -1,0 +1,13 @@
+---
+const { product, lang, t } = Astro.props;
+const title = product.title?.[lang] || product.title?.en || product.title;
+const description = product.description?.[lang] || product.description?.en || product.description;
+---
+<article class="card">
+  <img src={product.images?.[0]} alt={title} loading="lazy">
+  <div class="card-body">
+    <div class="badges"><span class="badge">{t.handmade}</span><span class="badge">{t.one}</span><span class="badge">{t.status[product.status] || product.status}</span></div>
+    <h3>{title}</h3><p>{description}</p>
+    <div class="actions"><a class="btn" href={`https://wa.me/971525988304?text=${encodeURIComponent(title)}`}>{t.view}</a><a class="btn" href={`https://wa.me/971525988304?text=${encodeURIComponent(t.similar + ': ' + title)}`}>{t.similar}</a></div>
+  </div>
+</article>
