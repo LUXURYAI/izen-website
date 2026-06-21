@@ -1,0 +1,13 @@
+import {defineConfig} from 'sanity'
+import {structureTool} from 'sanity/structure'
+import {visionTool} from '@sanity/vision'
+import {schemaTypes} from './schemaTypes'
+
+export default defineConfig({
+  name: 'default',
+  title: 'IZEN Admin',
+  projectId: 'REPLACE_WITH_PROJECT_ID',
+  dataset: 'production',
+  plugins: [structureTool(), visionTool()],
+  schema: {types: schemaTypes},
+})
