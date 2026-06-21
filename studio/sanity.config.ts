@@ -6,7 +6,7 @@ import {schemaTypes} from './schemaTypes'
 export default defineConfig({
   name: 'default',
   title: 'IZEN Admin',
-  projectId: 'REPLACE_WITH_PROJECT_ID',
+  projectId: 'wg69ubgp',
   dataset: 'production',
   plugins: [structureTool(), visionTool()],
   schema: {types: schemaTypes},
