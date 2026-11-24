@@ -1,0 +1,159 @@
+
+---
+import type { Lang } from '../lib/i18n';
+
+interface Props {
+  recommendation: {
+    title: Partial<Record<Lang, string>>;
+    description?: Partial<Record<Lang, string>>;
+    image?: string;
+    affiliateUrl: string;
+  };
+  lang: Lang;
+}
+
+const { recommendation, lang } = Astro.props;
+
+const labels = {
+  en: {
+    recommended: 'Recommended by IZEN',
+    button: 'View on Amazon',
+    affiliate: 'Affiliate link'
+  },
+  ru: {
+    recommended: 'Рекомендует IZEN',
+    button: 'Смотреть на Amazon',
+    affiliate: 'Партнёрская ссылка'
+  },
+  ar: {
+    recommended: 'توصية من IZEN',
+    button: 'عرض على أمازون',
+    affiliate: 'رابط تسويق بالعمولة'
+  }
+};
+
+const t = labels[lang];
+
+const title =
+  recommendation.title?.[lang] ||
+  recommendation.title?.en ||
+  '';
+
+const description =
+  recommendation.description?.[lang] ||
+  recommendation.description?.en ||
+  '';
+---
+
+<article class="card recommendation-card">
+
+  {recommendation.image && (
+    <img
+      class="recommendation-image"
+      src={recommendation.image}
+      alt={title}
+      loading="lazy"
+    />
+  )}
+
+  <div class="card-body">
+
+    <div class="badges">
+      <span class="badge recommendation-badge">
+        {t.recommended}
+      </span>
+      <span class="badge">Amazon</span>
+    </div>
+
+    <h3>{title}</h3>
+
+    {description && <p>{description}</p>}
+
+    <div class="recommendation-actions">
+      <a
+        class="amazon-button"
+        href={recommendation.affiliateUrl}
+        target="_blank"
+        rel="sponsored noopener noreferrer"
+      >
+        {t.button}
+        <span aria-hidden="true">↗</span>
+      </a>
+
+      <small class="affiliate-label">
+        {t.affiliate}
+      </small>
+    </div>
+
+  </div>
+</article>
+
+<style>
+  .recommendation-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    transition: transform 0.25s ease,
+                box-shadow 0.25s ease;
+  }
+
+  .recommendation-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  }
+
+  .recommendation-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    background: #ffffff;
+    padding: 18px;
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .recommendation-badge {
+    border-color: #b78a32;
+    color: #8a6420;
+  }
+
+  .recommendation-actions {
+    margin-top: auto;
+    padding-top: 20px;
+  }
+
+  .amazon-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 15px 20px;
+    background: #111111;
+    color: #d4af37;
+    border: 1px solid #b78a32;
+    text-decoration: none;
+    font-weight: 700;
+    transition: background 0.2s ease,
+                color 0.2s ease;
+  }
+
+  .amazon-button:hover {
+    background: #b78a32;
+    color: #111111;
+  }
+
+  .affiliate-label {
+    display: block;
+    margin-top: 10px;
+    color: #6b675f;
+    font-size: 12px;
+    text-align: center;
+  }
+</style>
+

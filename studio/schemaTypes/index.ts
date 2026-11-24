@@ -1,2 +1,7 @@
 import product from './product'
-export const schemaTypes = [product]
+import recommendation from './recommendation'
+
+export const schemaTypes = [
+  product,
+  recommendation
+]
