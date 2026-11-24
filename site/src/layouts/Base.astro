@@ -1,13 +1,169 @@
+
 ---
 import '../styles/global.css';
 import type { Lang } from '../lib/i18n';
 import { copy } from '../lib/i18n';
-const { lang, title = 'IZEN — Handmade Epoxy Resin Art' } = Astro.props as {lang: Lang, title?: string};
+
+const {
+  lang,
+  title = 'IZEN — Handmade Epoxy Resin Art'
+} = Astro.props as {
+  lang: Lang;
+  title?: string;
+};
+
 const t = copy[lang];
 const dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+const recommendationLabels = {
+  en: 'Our Recommendations',
+  ru: 'Рекомендации от нас',
+  ar: 'توصياتنا'
+};
 ---
-<!doctype html><html lang={lang} dir={dir}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="description" content={t.heroText}><link rel="icon" type="image/png" href="/favicon.png"><title>{title}</title></head><body dir={dir}>
-<header class="header"><div class="container nav"><a class="brand" href={`/${lang}/`}><img src="/images/izen-mark.png" alt="IZEN"><span><b>IZEN</b><small>Handmade. Unique. Made Only Once.</small></span></a><nav class="menu"><a href={`/${lang}/#collection`}>{t.nav.collection}</a><a href={`/${lang}/#custom`}>{t.nav.custom}</a><a href={`/${lang}/#about`}>{t.nav.about}</a><a href={`/${lang}/#contact`}>{t.nav.contact}</a></nav><div class="langs"><a href="/en/">EN</a><a href="/ru/">RU</a><a href="/ar/">AR</a></div></div></header>
-<slot />
-<footer class="footer"><div class="container footer-grid"><div><strong>IZEN FZE</strong><p>{t.footer}</p></div><div><a href="https://wa.me/971525988304">+971 52 598 8304</a><br><a href="mailto:izenfze@gmail.com">izenfze@gmail.com</a><p>United Arab Emirates</p></div></div></footer>
-</body></html>
+
+<!doctype html>
+<html lang={lang} dir={dir}>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <meta name="description" content={t.heroText}>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <title>{title}</title>
+</head>
+
+<body dir={dir}>
+
+  <header class="header">
+    <div class="container nav">
+
+      <a class="brand" href={`/${lang}/`}>
+        <img src="/images/izen-mark.png" alt="IZEN">
+        <span>
+          <b>IZEN</b>
+          <small>Handmade. Unique. Made Only Once.</small>
+        </span>
+      </a>
+
+      <nav class="menu">
+
+        <a href={`/${lang}/#collection`}>
+          {t.nav.collection}
+        </a>
+
+        <a
+          class="recommendations-link"
+          href={`/${lang}/#recommendations`}
+        >
+          {recommendationLabels[lang]}
+        </a>
+
+        <a href={`/${lang}/#custom`}>
+          {t.nav.custom}
+        </a>
+
+        <a href={`/${lang}/#about`}>
+          {t.nav.about}
+        </a>
+
+        <a href={`/${lang}/#contact`}>
+          {t.nav.contact}
+        </a>
+
+      </nav>
+
+      <div class="langs">
+        <a href="/en/">EN</a>
+        <a href="/ru/">RU</a>
+        <a href="/ar/">AR</a>
+      </div>
+
+    </div>
+  </header>
+
+  <slot />
+
+  <footer class="footer">
+    <div class="container footer-grid">
+
+      <div>
+        <strong>IZEN FZE</strong>
+        <p>{t.footer}</p>
+      </div>
+
+      <div>
+        <a href="https://wa.me/971525988304">
+          +971 52 598 8304
+        </a>
+
+        <br>
+
+        <a href="mailto:izenfze@gmail.com">
+          izenfze@gmail.com
+        </a>
+
+        <p>United Arab Emirates</p>
+      </div>
+
+    </div>
+  </footer>
+
+</body>
+</html>
+
+<style>
+  .menu {
+    gap: 16px;
+  }
+
+  .menu a {
+    white-space: nowrap;
+  }
+
+  .menu .recommendations-link {
+    color: #8a6420;
+    font-weight: 700;
+    transition: color 0.2s ease;
+  }
+
+  .menu .recommendations-link:hover {
+    color: #111111;
+  }
+
+  @media (max-width: 1100px) {
+    .nav {
+      height: auto;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-block: 12px;
+    }
+
+    .langs {
+      margin-inline-start: auto;
+    }
+
+    .menu {
+      display: flex;
+      order: 3;
+      flex-basis: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      gap: 18px;
+      padding-block: 8px;
+    }
+
+    .menu a {
+      flex-shrink: 0;
+      font-size: 13px;
+    }
+
+    :global(#recommendations),
+    :global(#collection),
+    :global(#custom),
+    :global(#about),
+    :global(#contact) {
+      scroll-margin-top: 145px;
+    }
+  }
+</style>
