@@ -1,37 +1,331 @@
+
 ---
 import Base from '../../layouts/Base.astro';
 import ProductCard from '../../components/ProductCard.astro';
+import RecommendationCard from '../../components/RecommendationCard.astro';
 import { copy, isLang } from '../../lib/i18n';
-import { getProducts } from '../../lib/sanity';
+import { getProducts, getRecommendations } from '../../lib/sanity';
+
 export const prerender = false;
+
 const langParam = Astro.params.lang || 'en';
-if (!isLang(langParam)) return Astro.redirect('/en/');
+
+if (!isLang(langParam)) {
+  return Astro.redirect('/en/');
+}
+
 const lang = langParam;
 const t = copy[lang];
-const products = await getProducts();
+
+const [products, recommendations] = await Promise.all([
+  getProducts(),
+  getRecommendations()
+]);
+
+const recommendationCopy = {
+  en: {
+    title: 'Our Recommendations',
+    subtitle: 'Discover products selected by IZEN and available on Amazon UAE.',
+    disclosure: 'As an Amazon Associate I earn from qualifying purchases.',
+    empty: 'New recommendations coming soon.'
+  },
+  ru: {
+    title: 'Рекомендации от нас',
+    subtitle: 'Откройте для себя товары, подобранные командой IZEN и доступные на Amazon UAE.',
+    disclosure: 'Как участник партнёрской программы Amazon, IZEN получает комиссию за покупки, соответствующие условиям программы.',
+    empty: 'Скоро здесь появятся новые рекомендации.'
+  },
+  ar: {
+    title: 'توصياتنا',
+    subtitle: 'اكتشف المنتجات التي اختارها فريق IZEN والمتوفرة على أمازون الإمارات.',
+    disclosure: 'بصفتنا مشاركين في برنامج أمازون للتسويق بالعمولة، نحصل على عمولة من عمليات الشراء المؤهلة.',
+    empty: 'توصيات جديدة قريباً.'
+  }
+};
+
+const rec = recommendationCopy[lang];
 ---
+
 <Base lang={lang}>
-<main>
-<section class="container hero"><div><div class="eyebrow">{t.heroEyebrow}</div><h1>{t.heroTitle}</h1><p>{t.heroText}</p><div class="actions"><a class="btn primary" href="#collection">{t.explore}</a><a class="btn" href="#custom">{t.request}</a></div></div><div class="hero-media"><img src="/images/products/wall-art-main.png" alt="IZEN handmade epoxy resin art"></div></section>
-<section class="section white" id="about"><div class="container"><h2>{t.promiseTitle}</h2><p class="lead">{t.promiseText}</p></div></section>
-<section class="section" id="collection"><div class="container"><h2>{t.collectionTitle}</h2><p class="lead">{t.collectionText}</p><div class="category-filters" aria-label="Product categories"><button class="category-filter active" type="button" data-filter="all">{t.allCategories}</button>{Object.entries(t.categories).map(([key,label])=><button class="category-filter" type="button" data-filter={key}>{label}</button>)}</div><div class="grid" id="product-grid">{products.map((product:any)=><ProductCard product={product} lang={lang} t={t}/>)}</div></div></section>
-<section class="section white"><div class="container gift"><img src="/images/products/phone-stand-black-main.png" alt="Unique handmade gift"><div><div class="eyebrow">IZEN</div><h2>{t.giftTitle}</h2><p class="lead">{t.giftText}</p></div></div></section>
-<section class="section dark" id="custom"><div class="container"><h2>{t.customTitle}</h2><p class="lead">{t.customText}</p><div class="steps">{t.process.map((item,i)=><div class="step"><b>0{i+1}</b><p>{item}</p></div>)}</div></div></section>
-<section class="section white" id="contact"><div class="container"><h2>{t.contactTitle}</h2><form class="form" action="https://formsubmit.co/izenfze@gmail.com" method="POST"><input name="name" placeholder={t.orderForm.name} required><input name="phone" placeholder={t.orderForm.phone} required><input type="email" name="email" placeholder={t.orderForm.email}><input name="city" placeholder={t.orderForm.city}><textarea name="idea" placeholder={t.orderForm.idea} required></textarea><input type="hidden" name="_subject" value="New IZEN custom order request"><button class="btn primary" type="submit">{t.orderForm.submit}</button></form><div class="actions"><a class="btn" href="https://wa.me/971525988304">{t.whatsapp}</a><a class="btn" href="mailto:izenfze@gmail.com">{t.email}</a></div></div></section>
-</main>
+  <main>
+
+    <section class="container hero">
+      <div>
+        <div class="eyebrow">{t.heroEyebrow}</div>
+        <h1>{t.heroTitle}</h1>
+        <p>{t.heroText}</p>
+
+        <div class="actions">
+          <a class="btn primary" href="#collection">
+            {t.explore}
+          </a>
+          <a class="btn" href="#custom">
+            {t.request}
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-media">
+        <img
+          src="/images/products/wall-art-main.png"
+          alt="IZEN handmade epoxy resin art"
+        />
+      </div>
+    </section>
+
+    <section class="section white" id="about">
+      <div class="container">
+        <h2>{t.promiseTitle}</h2>
+        <p class="lead">{t.promiseText}</p>
+      </div>
+    </section>
+
+    <section class="section" id="collection">
+      <div class="container">
+
+        <h2>{t.collectionTitle}</h2>
+        <p class="lead">{t.collectionText}</p>
+
+        <div
+          class="category-filters"
+          aria-label="Product categories"
+        >
+          <button
+            class="category-filter active"
+            type="button"
+            data-filter="all"
+          >
+            {t.allCategories}
+          </button>
+
+          {Object.entries(t.categories).map(([key, label]) => (
+            <button
+              class="category-filter"
+              type="button"
+              data-filter={key}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <div class="grid" id="product-grid">
+          {products.map((product: any) => (
+            <ProductCard
+              product={product}
+              lang={lang}
+              t={t}
+            />
+          ))}
+        </div>
+
+      </div>
+    </section>
+
+    <section
+      class="section white recommendations-section"
+      id="recommendations"
+    >
+      <div class="container">
+
+        <div class="eyebrow">IZEN · AMAZON UAE</div>
+
+        <h2>{rec.title}</h2>
+
+        <p class="lead">{rec.subtitle}</p>
+
+        {recommendations.length > 0 ? (
+          <>
+            <p class="affiliate-disclosure">
+              {rec.disclosure}
+            </p>
+
+            <div class="grid recommendations-grid">
+              {recommendations.map((recommendation: any) => (
+                <RecommendationCard
+                  recommendation={recommendation}
+                  lang={lang}
+                />
+              ))}
+            </div>
+          </>
+        ) : (
+          <p class="recommendations-empty">
+            {rec.empty}
+          </p>
+        )}
+
+      </div>
+    </section>
+
+    <section class="section white">
+      <div class="container gift">
+
+        <img
+          src="/images/products/phone-stand-black-main.png"
+          alt="Unique handmade gift"
+        />
+
+        <div>
+          <div class="eyebrow">IZEN</div>
+          <h2>{t.giftTitle}</h2>
+          <p class="lead">{t.giftText}</p>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="section dark" id="custom">
+      <div class="container">
+
+        <h2>{t.customTitle}</h2>
+        <p class="lead">{t.customText}</p>
+
+        <div class="steps">
+          {t.process.map((item, i) => (
+            <div class="step">
+              <b>0{i + 1}</b>
+              <p>{item}</p>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+
+    <section class="section white" id="contact">
+      <div class="container">
+
+        <h2>{t.contactTitle}</h2>
+
+        <form
+          class="form"
+          action="https://formsubmit.co/izenfze@gmail.com"
+          method="POST"
+        >
+          <input
+            name="name"
+            placeholder={t.orderForm.name}
+            required
+          />
+
+          <input
+            name="phone"
+            placeholder={t.orderForm.phone}
+            required
+          />
+
+          <input
+            type="email"
+            name="email"
+            placeholder={t.orderForm.email}
+          />
+
+          <input
+            name="city"
+            placeholder={t.orderForm.city}
+          />
+
+          <textarea
+            name="idea"
+            placeholder={t.orderForm.idea}
+            required
+          ></textarea>
+
+          <input
+            type="hidden"
+            name="_subject"
+            value="New IZEN custom order request"
+          />
+
+          <button
+            class="btn primary"
+            type="submit"
+          >
+            {t.orderForm.submit}
+          </button>
+        </form>
+
+        <div class="actions">
+
+          <a
+            class="btn"
+            href="https://wa.me/971525988304"
+          >
+            {t.whatsapp}
+          </a>
+
+          <a
+            class="btn"
+            href="mailto:izenfze@gmail.com"
+          >
+            {t.email}
+          </a>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
 </Base>
+
+<style>
+  .recommendations-section {
+    border-top: 1px solid #ded7ca;
+    border-bottom: 1px solid #ded7ca;
+    background: #faf8f3;
+    scroll-margin-top: 90px;
+  }
+
+  .recommendations-section .eyebrow {
+    margin-bottom: 18px;
+  }
+
+  .affiliate-disclosure {
+    font-size: 13px;
+    line-height: 1.7;
+    color: #6b675f;
+    margin-top: 18px;
+    max-width: 820px;
+  }
+
+  .recommendations-empty {
+    padding: 30px;
+    border: 1px dashed #b78a32;
+    color: #6b675f;
+    text-align: center;
+    margin-top: 32px;
+    background: #ffffff;
+  }
+
+  .recommendations-grid {
+    align-items: stretch;
+  }
+</style>
 
 <script>
   const filters = document.querySelectorAll('.category-filter');
   const cards = document.querySelectorAll('#product-grid .card');
+
   filters.forEach((button) => {
     button.addEventListener('click', () => {
       const filter = button.getAttribute('data-filter');
-      filters.forEach((item) => item.classList.remove('active'));
+
+      filters.forEach((item) => {
+        item.classList.remove('active');
+      });
+
       button.classList.add('active');
+
       cards.forEach((card) => {
-        const category = card.getAttribute('data-category') || 'handmadeGift';
-        card.toggleAttribute('hidden', filter !== 'all' && category !== filter);
+        const category =
+          card.getAttribute('data-category') || 'handmadeGift';
+
+        card.toggleAttribute(
+          'hidden',
+          filter !== 'all' && category !== filter
+        );
       });
     });
   });
